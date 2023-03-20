@@ -1,0 +1,601 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>EO Time Series Viewer</title>
+
+		<meta name="description" content="A QGIS Plugin to explore Earth Observation Time Series Data">
+		<meta name="author" content="Benjamin Jakimow">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
+		<link rel="stylesheet" href="css/reveal.css">
+
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- own style definitions on top-->
+		<link rel="stylesheet" href="css/custom.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<link rel="icon" href="img/img/logo.png"/>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section id="title">
+
+					<div style="display:grid; grid-template-columns: 100%; alignment: right; margin-bottom: 1em">
+						<img style="justify-self:end;width:auto; max-height:100px"
+							 alt="HU Berlin" src="img/hukombi_bww_rgb.svg"/>
+					</div>
+					<div style="padding-right: 0em">
+						<div class="hlogo">
+						<img src="img/icon.svg"/>
+						<h2> EO Time Series Viewer</h2>
+						</div>
+
+						<p>A QGIS plugin to explore Earth Observation <br/>Time Series Data</p>
+
+						<small>
+							<p>
+								<a href="">Benjamin Jakimow</a>, Sebastian van der Linden, Fabian Thiel & Patrick Hostert<br/>
+								Geography Department, Humboldt-Universität zu Berlin, Germany
+
+							</p>
+
+						</small>
+					</div>
+				</section>
+
+
+				<section >
+
+					<section id="background.1.1">
+
+						<h3>Background</h3>
+
+						<div class="imgrow">
+
+                            <!--
+							<img src="img/Pic.A1c.burned.png"/>
+							<img src="img/Pic.A1d.tilled.png"/>
+							-->
+							<img style="height: 350px; width: auto" src="img/Pic.Burning.png"/>
+							<img style="height: 350px; width: auto" src="img/Pic.Tillage.png"/>
+
+						</div>
+
+						<p style="font-style: italic">
+						<small>
+							Jakimow, B., Griffiths, P., van der Linden, S. and Hostert, P. (2018):
+							"Mapping pasture management in the Brazilian Amazon from dense Landsat time series."
+							Remote Sensing of Environment 205: 453-468.
+							</small>
+						</p>
+
+					</section>
+					<section id="background.1.3">
+						<img style="border:0" src="img/Figure_1_Map.png"/>
+					</section>
+
+
+				</section>
+
+				<section id="background.1.2">
+					<!--<h3>Background</h3>-->
+					<table class="table_backgroundexamples">
+						<tr>
+							<td>Landsat 7<br/>2014-07-02</td>
+							<td>Landsat 8<br/>2014-07-10</td>
+							<td>Landsat 7<br/>2014-07-18</td>
+							<td>Landsat 8<br/>2014-07-26</td>
+						</tr>
+						<tr>
+							<td><img src="img/LTS/2014-07-02.L7.TrueColor.png"/></td>
+							<td><img src="img/LTS/2014-07-10.L8.TrueColor.png"/></td>
+							<td><img src="img/LTS/2014-07-18.L7.TrueColor.png"/></td>
+							<td><img src="img/LTS/2014-07-26.L8.TrueColor.png"/></td>
+						</tr>
+					</table>
+					<ul>
+                        <li>Short visibility of land management<br/>
+							<small>follow up management, clouds, artefacts, ...</small>
+						</li>
+                        <li>Identification of landcover + burning and tillage events for cal/val</li>
+					</ul>
+
+				</section>
+
+				<section id="background.2">
+					<!--<h3>Background</h3>-->
+
+					<div style="display:grid; grid-template-columns: 75px auto; padding-left: 10px;">
+						<img style="height: 75px; width: auto" src="img/img/icons/mIconRaster.svg">
+						<div class="grid_bullet_txt" style="text-align: left;margin-left: 10px;">
+							Raster images<br/>
+							<small style="">
+								80 Landsat (ETM+, OLI), 43 RapidEye, 10 Pléiades, 5 SPOT<br/>
+							</small>
+						</div>
+
+						<img style="height: 75px; width: auto"
+							 class="fragment" data-fragment-index="2" src="img/icon_polygon.svg">
+						<div class="grid_bullet_txt fragment " data-fragment-index="2"
+						style="text-align: left;margin-left: 10px;"
+						>
+
+							Vector maps<br/>
+							<small style="">GPS positions, official deforestation and land cover maps, administrative units</small>
+
+						</div>
+
+						<img style="height: 75px; width: auto"
+								class="fragment" data-fragment-index="3" src="img/icon_table.svg">
+						<div class="fragment grid_bullet_txt" data-fragment-index="3"
+						style="text-align: left;margin-left: 10px;"
+						>
+							Field Data<br/>
+							<small style="">Camera pictures with locations, personal notes</small>
+						</div>
+
+					</div>
+					<div class="fragment" style="text-align: left">
+						Problems<br/>
+						<ul>
+							<li>We want to visualize all data available</li>
+							<li>Different data types, formats, resolutions</li>
+						</ul>
+
+					</div>
+
+				</section>
+
+				<section id="Alternatives">
+				An incomplete and subjective overview on software to visualize EO raster data
+					<small>
+
+						<table class="tablelisting">
+							<thead>
+								<td></td>
+								<td>GUI</td>
+								<td>TS</td>
+								<td>MM</td>
+								<td>SP</td>
+								<td>TP</td>
+								<td>VRT</td>
+								<td>Notes</td>
+							</thead>
+
+							<tr>
+								<td></td>
+								<td>TimeSync</td>
+								<td>++</td> <!-- TS Time series concept-->
+								<td>++</td> <!-- MM Multiple Maps-->
+								<td>+</td> <!-- SP Spectral Profiles -->
+								<td>++</td> <!-- TP Temporal Profile -->
+								<td>-</td> <!-- RF Raster Formats -->
+								<td>registration required,
+								<a href="https://doi.org/10.1016/j.rse.2010.07.010">Cohen et al. (2010)</a><br/>
+								</td> <!-- Notes -->
+								<!--
+								<td>
+
+									<a href="http://timesync.forestry.oregonstate.edu/index.html">
+										timesync.forestry.oregonstate.edu
+									</a>
+								</td> -->
+							</tr>
+
+							<tr>
+								<td></td>
+								<td>TSTools</td>
+								<td>++</td> <!-- TS Time series concept-->
+								<td>-</td> <!-- MM Multiple Maps-->
+								<td></td> <!-- SP Spectral Profiles -->
+								<td>++</td> <!-- TP Temporal Profile -->
+								<td>++</td> <!-- RF Raster Formats -->
+								<td>open source, QGIS Plugin</td> <!-- Notes -->
+								<!--
+								<td><a href="https://github.com/ceholden/TSTools">github.com/ceholden/TSTools</a></td>
+								-->
+							</tr>
+
+							<tr>
+								<td><img style="width:auto; height: 45px" src="img/ENVI_Icon_ColorLogo_web.png"/> </td>
+								<td>ENVI</td>
+								<td>++</td> <!-- TS Time series concept-->
+								<td>+</td> <!-- MM Multiple Maps-->
+								<td>++</td> <!-- SP Spectral Profiles -->
+								<td>++</td> <!-- TP Temporal Profile -->
+								<td>-</td> <!-- RF Raster Formats -->
+								<td>commercial</td> <!-- Notes -->
+								<!--
+								<td><a href="https://www.harrisgeospatial.com/Software-Technology/ENVI">harrisgeospatial.com/Software-Technology/ENVI</a></td>
+								-->
+							</tr>
+
+							<tr>
+								<td></td>
+								<td>SNAP</td>
+								<td>+</td> <!-- TS Time series concept-->
+								<td>+</td> <!-- MM Multiple Maps-->
+								<td>++</td> <!-- SP Spectral Profiles -->
+								<td>+</td> <!-- TP Temporal Profile -->
+								<td>-</td> <!-- RF Raster Formats -->
+								<td>open source</td> <!-- Notes -->
+								<!--
+								<td><a href="http://step.esa.int/main/toolboxes/snap/">step.esa.int/main/toolboxes/snap</a></td>
+								-->
+
+							</tr>
+
+							<tr>
+								<td><img style="width:auto; height: 45px" src="img/earth_engine-128.png"/></td>
+								<td>GEE</td>
+
+								<td>++</td> <!-- TS Time series concept-->
+								<td>+</td> <!-- MM Multiple Maps-->
+								<td>+</td> <!-- SP Spectral Profiles -->
+								<td>+</td> <!-- TP Temporal Profile -->
+								<td></td> <!-- RF Raster Formats -->
+								<td>online only,
+									<a href="https://doi.org/10.1016/j.rse.2017.06.031">Gorelick et al. (2017)</a></td>
+								<!--
+								<td>
+
+									<a href="https://earthengine.google.com">earthengine.google.com</a>
+								</td>
+								-->
+							</tr>
+
+							<tr>
+								<td><img style="width:auto; height: 45px" src="img/argis_pro.png"/></td>
+								<td>ArcGIS</td>
+								<td>-</td> <!-- TS Time series concept-->
+								<td>+</td> <!-- MM Multiple Maps-->
+								<td>+</td> <!-- SP Spectral Profiles -->
+								<td>-</td> <!-- TP Temporal Profile -->
+								<td>+</td> <!-- RF Raster Formats -->
+								<td>commercial</td> <!-- Notes -->
+								<!--
+								<td><a href="http://www.arcgis.com">arcgis.com</a></td>
+								-->
+							</tr>
+
+							<tr>
+								<td><img style="width:auto; height: 45px" src="img/qgis_icon.svg"/></td>
+								<td>QGIS</td>
+								<td>-</td> <!-- TS Time series concept-->
+								<td>+</td> <!-- MM Multiple Maps-->
+								<td>+</td> <!-- SP Spectral Profiles -->
+								<td>-</td> <!-- TP Temporal Profile -->
+								<td>+</td> <!-- RF Raster Formats -->
+								<td>open source</td> <!-- Notes -->
+								<!--
+								<td><a href="https://www.qgis.org">qgis.org</a></td>
+								-->
+							</tr>
+						</table>
+
+						<p style="text-align: left; font-size: smaller">
+
+						Features:
+							TS = time series is a known concept,
+							MM = multiple maps side-by-side,  <br/>
+							SP = spectral profiles, TP = temporal profiles,
+							VRT = reads GDAL virtual rasters
+
+						<br/>Support: basic (+), good (++), none (-)
+						</p>
+						<!--
+						<span class="">TS</span>
+						<span class="">MM</span>
+						<span class="">SP</span>
+						<span class="">TP</span>
+						<span class="">VRT</span>
+						<span class="">FOSS</span>
+						-->
+					</small>
+				</section>
+
+				<section id="Goals">
+					<h3>Goals / Requirements</h3>
+					<ul>
+						<li>Integrated & interactive visualization<br/>
+							<small>spatial, spectral and temporal dimensions in EOTS</small>
+						</li>
+
+						<li class="fragment" data-fragment-index="1">Multi-sensor and wide data-format support<br/>
+                            <small>
+                                different resolutions, spatial extents,<br/>
+                                read data "as-is": tif, bsq, hdf, shp, gpkg, vrt, ...</small>
+                            </small>
+						</li>
+
+						<li class="fragment"  data-fragment-index="2">Easy adjustments of visualization settings<br/>
+							<small>
+								apply same render style to multiple observation ...
+							</small>
+						</li>
+
+						<li class="fragment"  data-fragment-index="3">
+							Can be used offline<br/>
+							<small>
+								field work in remote areas
+							</small>
+						</li>
+					</ul>
+				</section>
+
+
+				<section id="EOTSV.1" style="vertical-align: bottom">
+					<!--  <img style="height: 50px;" src="img/icon.svg"/>  -->
+
+					<h3><img style="" src="img/icon.svg"/>EO Time Series Viewer</h3>
+
+
+						<img style="height: 800; width: auto;"
+							 src="img/Screenshot.macOS.all.jpg"/>
+
+
+
+				</section>
+
+				<section id="Installation">
+
+                    <div style="display:grid; grid-template-columns: 70% auto">
+                        <div>
+                            <p>
+                                    Official QGIS 3 plugin<br/>
+                                    <small>
+                                    <a href="https://plugins.qgis.org/plugins/timeseriesviewerplugin/">plugins.qgis.org/plugins/timeseriesviewerplugin/</a>
+                                    </small>
+
+                            </p>
+                                <img style="max-height: 500px; width: auto"
+                                    alt="screenshot plugin manager"
+                                    src="img/screenshot.pluginmanager.png"/>
+
+                        </div>
+                        <div style="display: grid; grid-template-columns:auto;">
+
+                            <img alt="Python" style="height: auto; width: 500px;" src="img/python-logo-generic.svg">
+
+							<img style="background-color:white; height:100px; width:auto;" alt="GPL" src="img/gpl-v3-logo.svg">
+
+
+                            <div class="imgrow" style="height:100px">
+                                <img alt="Qt5" src="img/Qt_logo_2016.svg">
+                                <img alt="QGIS" src="img/qgis_icon.svg">
+                            </div>
+                            <div class="imgrow" style="height:100px;">
+                                <img alt="GDAL" src="img/GDALLogoColor.svg">
+                                <img alt="Numpy" src="img/NumPy_logo.svg">
+                            </div>
+                            <a href="http://www.pyqtgraph.org">PyQtGraph</a>
+                        </div>
+                    </div>
+				</section>
+
+
+				<section id="Define Time Series">
+					<h5><img src="img/img/icons/mActionAddRasterLayer.svg">Add images</h5>
+
+                    <div class="imgrow" style="height: 300px; vertical-align: top">
+						<img style="max-height: 40%" alt="GDAL" src="img/GDALLogoColor.svg"/>
+						<img alt="screenshot time series table" src="img/img/timeseriesdock.png"/>
+					</div>
+					<ul>
+						<li>Automatic timestamp (ISO 8601) extraction</li>
+						<li>Varying projections, grids and spatial extents</li>
+						<li class="fragment" data-fragment-index="1">Each image get linked to a sensor</li>
+						<li class="fragment" data-fragment-index="1">Sensor = (#bands, pixel size, wavelength)</li>
+					</ul>
+				</section>
+
+				<section id="maps.1">
+					<h5>Map Visualization</h5>
+                    <img style="width: auto; height: 600px;"
+                         alt="screen animation"
+						 src="img/apng/opentimeseries3.apng">
+				</section>
+
+				<section id="maps.2">
+					<h5><img
+							style=""
+							src="img/img/icons/mActionAddMapView.svg"/>
+						Map Views</h5>
+					<img style="width: auto; height: 550px;"
+						 src="img/apng/secondmapview2.apng">
+
+				</section>
+
+				<section id="Temporal Profiles" >
+					<h5><img style=""
+							src="img/img/icons/mIconTemporalProfile.svg">Temporal Profiles</h5>
+					<img style="width: auto; height: 600px;"
+                            alt="Screenshot TP panel locations"
+						 src="img/apng/temporalprofile2.apng"/>
+				</section>
+
+				<section id="Speclibs">
+					<h5><img style=""
+							src="img/img/icons/pickrasterspectrum.svg"/>
+						Spectral profiles</h5>
+					<img alt="Screenshot Speclib panel"
+                         style="width: auto; height: 600px;"
+                         src="img/apng/spectralprofile2.apng"/>
+
+				</section>
+  <!--
+				<section id="maps.3">
+					<div class="grid2Col">
+					<img class="grid_item" alt="Screenshot MapView panel" src="img/img/mapviewdock.png"/>
+						<ul class="grid_item">
+							<li style="list-style: none"><img alt="Menu" src="img/MenuBar.png"></li>
+							<li>Interactive navigation with standard GIS tools</li>
+							<li>Spatially linked maps</li>
+							<li>QGIS raster render styles<br/>
+							<small>multi-band, single-band, categorical data</small>
+							<li>Same sensor = same render style per map view</li>
+							<li>Map view - same rendering for same sensor</li>
+
+						</li>
+					</ul>
+					</div>
+				</section>
+				-->
+
+				<section id="Labeling">
+					<h5><img style=""
+							src="img/mActionToggleEditing.svg"/>
+						Labeling reference data</h5>
+					<ul>
+                        <li>Identify and describe points / regions of interest
+						</li>
+                        <li>Create / edit vector geometries + attributes<br/>
+							<small>open for various use-cases and user-preferences</small>
+						</li>
+					    <li class="fragment" data-fragment-index="1">Copy & paste time stamps, DOY, sensor names, ...</li>
+                    </ul>
+
+					<div class="imgrow fragment" data-fragment-index="1">
+						<img style="width: 301px; height: 91px" alt="Screenshot Labeling" src="img/Labeling.SaveInfo.png"/>
+						<!--<img style="width: 427px; height: 228px" alt="Screenshot Labeling" src="img/Labeling.SaveCoordinates.png"/>-->
+						<img style="width: 278px; height: 369px" alt="Screenshot Labeling" src="img/Labelin.ClassWidget2.png"/>
+					</div>
+				</section>
+
+
+				<section id="Next steps">
+					<h5>To do's</h5>
+					<div style="alignment: left; text-align: left">
+					Many
+					</div>
+					<ul>
+                        <li>Speed-up labeling<br/>
+							<small>categorical labels, shortcuts to save date/DOY</small>
+						</li>
+                        <li>Improve spatial, temporal and spectral visualization<br/>
+                            <small>background tasks, spectral-temporal surfaces</small>
+						</li>
+						<li>Bug fixing</li>
+
+					</ul>
+				</section>
+
+				<section id="Conclusion">
+					<h3>Conclusion</h3>
+					<div style="alignment: left; text-align: left">
+					The EO Time Series Viewer
+					</div>
+					<ul>
+						<li>visualizes raster time series data "as-is"</li>
+						<li>provides an interactive view on spatial, spectral and temporal data dimensions</li>
+                        <li>supports labeling of reference data</li>
+						<li>is a QGIS Plugin, free and open source</li>
+					</ul>
+				</section>
+
+				<section id="Last Slide" data-background-image="img/background_cattle1.png">
+					<div style="display:grid; grid-template-columns: 100%; alignment: right; margin-bottom: 0em">
+
+						<img style="justify-self:end; width:auto; max-height:100px"
+							 alt="HU Berlin" src="img/hukombi_bww_rgb.svg"/>
+					</div>
+                <p style="font-size: larger; margin-top: 0em; line-height: 2.5;">
+						Thanks for your attention <br/>
+				</p>
+				<p style="margin-top: 5em;">
+					<small>
+                                <a style="color:white" href="mailto:benjamin.jakimow@geo.hu-berlin.de">benjamin.jakimow@geo.hu-berlin.de</a><br/>
+                                <!-- <a href="https://eo-time-series-viewer.readthedocs.io/en/latest/">eo-time-series-viewer.readthedocs.io</a><br/> -->
+                                <a style="color:white" href="https://bitbucket.org/jakimowb/eo-time-series-viewer">bitbucket.org/jakimowb/eo-time-series-viewer</a><br/>
+
+                        </small>
+
+                </p>
+
+
+
+					<div style="align-content: center" class="imgrow">
+
+						<img style="background-color:white; height: 100px; margin-right:1em; width: auto" src="img/logo_dlr.svg"/>
+
+						<img style="background-color:white; height: 100px; margin-right:1em; width: auto" src="img/logo_gfz.svg"/>
+						<p style="font-size: small">
+								The EO Time Series Viewer is developed at Humboldt-Universität zu Berlin.
+								Born in the SenseCarbon project, it was funded by the German Aerospace Centre (DLR) and
+								granted by the Federal Ministry of Education and Research (BMBF, grant no. 50EE1254).
+								Since 2017 it is developed under contract by the German Research Centre for Geosciences (GFZ)
+								as part of the EnMAP Core Science Team activities,
+								funded by DLR and granted by the Federal Ministry of Economic Affairs and Energy (BMWi, grant no. 50EE1529).
+						</p>
+
+					</div>
+
+					<!--
+					<div style="display:grid; grid-template-columns:33% 33% 3%; alignment: center;">
+							<img style="height: 100px;width: auto; background-color: white;" src="img/logo_dlr.svg">
+							<img style="height: 100px;width: auto; background-color: white;" src="img/logo_gfz.svg">
+							<img style="height: 100px;width: auto; background-color: white; padding: 2px" src="img/Enmap_logo.jpg">
+					</div>
+					-->
+
+
+
+
+				</section>
+			</div>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				// Display a presentation progress bar
+				progress: true,
+
+				// Display the page number of the current slide
+				slideNumber: true,
+
+				// Vertical centering of slides
+				center: false,
+
+				// Flags if speaker notes should be visible to all viewers
+				showNotes:false,
+
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); }},
+					{ src: 'plugin/reveal-svg-fragment.js', condition: function() { return !!document.querySelector( '[data-svg-fragment]' ); } }
+					]
+			});
+		</script>
+	</body>
+</html>
